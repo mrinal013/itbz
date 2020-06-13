@@ -2,6 +2,8 @@
 
 namespace wp_public;
 
+use wp_public\WP_Admin_Vue_Video;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -23,6 +25,8 @@ namespace wp_public;
  * @author     Mrinal Haque <mrinalhaque99@gmail.com>
  */
 class Wp_Admin_Vue_Public {
+
+	use WP_Admin_Vue_Video;
 
 	/**
 	 * The ID of this plugin.
@@ -54,6 +58,11 @@ class Wp_Admin_Vue_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+		add_action( 'init', [ $this, 'add_video_forum_endpoint'] );
+		add_action( 'woocommerce_account_video-forum_endpoint', [ $this, 'video_forum_content' ] );
+
+		add_filter( 'query_vars', [ $this, 'video_forum_query_vars' ], 0 );
+		add_filter( 'woocommerce_account_menu_items', [ $this, 'add_video_forum_link_my_account' ] );
 	}
 
 	/**
@@ -98,7 +107,7 @@ class Wp_Admin_Vue_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array( ), $this->version, false );
 
 	}
 

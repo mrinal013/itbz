@@ -171,3 +171,5 @@ class WP_Admin_Vue_Plugin_Boilerplate {
 }
 
 new WP_Admin_Vue_Plugin_Boilerplate();
+
+

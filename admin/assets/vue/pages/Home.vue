@@ -1,63 +1,70 @@
 <template>
   <div class="home">
-      <h2>Special URL Setting</h2>
       <div class="container">
-        <ul>
-          <li v-for="(row, i) in rows" :key="row.id">
-            <div class="row border d-flex align-items-center pt-3">
-              <div class="col-5">
-                <div class="form-group">
-                  <select class="form-control" v-model="specialProductUrl.product[i]">
-                    <option value="choice">Select a product</option>
-                    <option v-for="(option, index) in options" :value="option.id" :key="index">
-                      {{ '#' + option.id + ' ' + option.name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Enter url" v-model="specialProductUrl.url[i]">
-                </div>
-              </div>
-              <div class="col-1 alert">
-                <button type="button" class="close text-danger" aria-label="Close" @click="removePage(i)">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <button class="btn btn-primary float-right mt-3" @click="addPage">Add</button>
+      <h2>Special URL Setting</h2>
+        <div class="row mt-5">
+          <div class="col-sm-3">
+            <label>Select products</label>
+          </div>
+          <div class="col-sm-9">
+            <multiselect v-model="value" :options="options" :multiple="true"></multiselect>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-sm-3">
+            <label for="slug">Special page slug</label>
+          </div>
+          <div class="col-sm-9">
+            <input type="text" v-model="slug" class="form-control" id="slug"/>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-sm-3">
+            <label for="wckey">WooCommerce Consumer key</label>
+          </div>
+          <div class="col-sm-9">
+            <input type="text" v-model="wckey" class="form-control" id="wckey"/>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-sm-3">
+            <label for="wcsecret">WooCommerce Consumer secret</label>
+          </div>
+          <div class="col-sm-9">
+            <input type="text" v-model="wcsecret" class="form-control" id="wcsecret"/>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <button class="btn btn-primary mt-5" id="special-page-save" @click="specialPageSave">Save</button>   
       </div>
-      <div class="clearfix"></div>
-    <button class="btn btn-primary mt-3" id="special-page-save" @click="specialPageSave">Save</button>   
   </div>
 </template>
 
 <script>
+import Multiselect from 'vue-multiselect'
 import axios from "axios";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 
 const WooCommerce = new WooCommerceRestApi({
-  url: 'http://localhost/itbz', // Your store URL
-  consumerKey: 'ck_21784c84d2111e00ce0575880c302b8c57f302bf', // Your consumer key
-  consumerSecret: 'cs_9fcd70811921b259da213a7ebe972de708ae8e35', // Your consumer secret
+  url: object.siteurl, // Your store URL
+  consumerKey: object.wckey, // Your consumer key
+  consumerSecret: object.wcsecret, // Your consumer secret
   version: 'wc/v3' // WooCommerce WP REST API version
 });
 
 export default {
   name: "Home",
   components: {
+    Multiselect
   },
   data() {
     return {
-      rows: [{id:0}],
+      value: null,
+      slug: 'video-forum',
+      wckey: object.wckey,
+      wcsecret: object.wcsecret,
       options: [],
-      specialProductUrl: {
-        product: ['choice'],
-        url: []
-      },
+      rows: [{id:0}],
     };
   },
   methods: {
@@ -70,29 +77,13 @@ export default {
     removePage: function(index) {
       this.$delete(this.rows, index)
     },
-    matchProductAndUrl: function(array) {
-      let finalProductAndUrl = [],
-      totalProduct = array.product.length,
-      totalUrl = array.url.length,
-      maxArray = Math.max(totalProduct, totalUrl),
-      minArray = Math.max(totalProduct, totalUrl);
-
-      for( let i = 0; i < maxArray; i++ ) {
-        for( let j = 0; j < minArray; j++ ) {
-          if( i === j ) {
-            finalProductAndUrl.push( array.product[i] + '<>' + array.url[j] );
-          }
-        }
-      }
-
-      return finalProductAndUrl;
-    },
     specialPageSave: function() {
-      let finalProductAndUrlArray = this.matchProductAndUrl(this.specialProductUrl),
-      formData = new FormData;
-      formData.append('action', 'test_callback');
-      formData.append('special_product', finalProductAndUrlArray);
-      formData.append('phone', 'my phone');
+      let formData = new FormData;
+      formData.append('action', 'itbz_callback');
+      formData.append('products', this.value);
+      formData.append('slug', this.slug);
+      formData.append('wckey', this.wckey);
+      formData.append('wcsecret', this.wcsecret);
 
       axios
       .post(object.ajaxurl, formData)
@@ -107,7 +98,9 @@ export default {
   mounted: function() {
     WooCommerce.get("products?per_page=100")
     .then((response) => {
-      this.options = response.data
+      for(let i = 0; i <= response.data.length; i++) {
+        this.options.push(response.data[i].id)
+      }
     })
     .catch((error) => {
       console.log(error);

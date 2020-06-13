@@ -60,11 +60,16 @@ class Wp_Admin_Vue_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		
-		add_action( 'wp_ajax_test_callback', [ $this, 'test_callback_func' ] );
+		add_action( 'wp_ajax_itbz_callback', [ $this, 'itbz_callback_func' ] );
 	}
 
-	public function test_callback_func() {
-		echo $_POST['special_product'];
+	public function itbz_callback_func() {
+		
+		update_option( 'itbz-products', $_POST['products'] );
+		update_option( 'itbz-slug', $_POST['slug'] );
+		update_option( 'itbz-wckey', $_POST['wckey'] );
+		update_option( 'itbz-wcsecret', $_POST['wcsecret'] );
+
 		wp_die();
 	}
 
@@ -116,6 +121,9 @@ class Wp_Admin_Vue_Admin {
 
 		wp_localize_script( $this->plugin_name, 'object', [
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'siteurl' => get_option('siteurl'),
+			'wckey' => get_option('itbz-wckey'),
+			'wcsecret' => get_option('itbz-wcsecret'),
 		] );
 
 	}
