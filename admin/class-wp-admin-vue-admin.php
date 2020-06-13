@@ -58,7 +58,14 @@ class Wp_Admin_Vue_Admin {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;	
+		$this->version = $version;
+		
+		add_action( 'wp_ajax_test_callback', [ $this, 'test_callback_func' ] );
+	}
+
+	public function test_callback_func() {
+		echo $_POST['special_product'];
+		wp_die();
 	}
 
 	

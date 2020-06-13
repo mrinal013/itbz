@@ -36,8 +36,8 @@
 </template>
 
 <script>
+import axios from "axios";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
-import Link from "../components/Link.vue";
 
 const WooCommerce = new WooCommerceRestApi({
   url: 'http://localhost/itbz', // Your store URL
@@ -49,7 +49,6 @@ const WooCommerce = new WooCommerceRestApi({
 export default {
   name: "Home",
   components: {
-    Link
   },
   data() {
     return {
@@ -81,7 +80,7 @@ export default {
       for( let i = 0; i < maxArray; i++ ) {
         for( let j = 0; j < minArray; j++ ) {
           if( i === j ) {
-            finalProductAndUrl[array.product[i]] = array.url[j];
+            finalProductAndUrl.push( array.product[i] + '<>' + array.url[j] );
           }
         }
       }
@@ -89,8 +88,20 @@ export default {
       return finalProductAndUrl;
     },
     specialPageSave: function() {
-      let finalProductAndUrlArray = this.matchProductAndUrl(this.specialProductUrl);
-      console.log(finalProductAndUrlArray)
+      let finalProductAndUrlArray = this.matchProductAndUrl(this.specialProductUrl),
+      formData = new FormData;
+      formData.append('action', 'test_callback');
+      formData.append('special_product', finalProductAndUrlArray);
+      formData.append('phone', 'my phone');
+
+      axios
+      .post(object.ajaxurl, formData)
+      .then(function(response) {
+        console.log(response.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     }
   },
   mounted: function() {

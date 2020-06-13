@@ -1,10 +1,10 @@
 <template>
-  <h2>Videos page</h2>
+    <h2>WooCommerce Setup</h2>
 </template>
 
 <script>
 export default {
-  name: "Videos",
+  name: "WC",
   components: {},
 
   data: () => ({
