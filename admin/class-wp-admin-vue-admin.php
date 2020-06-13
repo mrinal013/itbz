@@ -107,6 +107,10 @@ class Wp_Admin_Vue_Admin {
 		
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array(  ), $this->version, false );
 
+		wp_localize_script( $this->plugin_name, 'object', [
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		] );
+
 	}
 
 }
