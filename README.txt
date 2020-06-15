@@ -2,32 +2,29 @@
 
 Admin part -----
 1. Create 2 admin pages 
-  a. Special URL Setting : From this page admin can create product's special page url. Page url's prefix is upto customer account page + slug. Also, consumer key and consumer secret field should set on this page.
-  b. Videos : : From this page admin can show and download all videos uploaded by customer.
+  a. Special URL Setting: From this page, admin can create a product's special page slug. Page URL's prefix is up to the customer account page + slug. Also, the WooCommerce consumer key and consumer secret field should set on this page.
+  b. Videos:  From this page, admin can show and download all videos uploaded by the customers.
 
 My account part -----
-2. Create a new page on customer account, based on product ordered. It shows like a tab.
-3. In this page there are 3 parts
-  a. Video upload section
-  b. This customer video section
-  c. Other customer's video section
+2. Get a new page on the customer account, based on the product ordered. It shows like a tab.
+3. On this page, there are 3 parts a. Video upload section b. This customer video section c. Other customer's video section
 
 ## Test instructions:
 1. Install this plugin as normal.
 2. It has WooCommerce dependency. Minimum WC version 4.0 required.
-3. After activate this plugin, we get 2 admin pages under ITBZ admin menu. These are - Settings and Videos
-4. At "Settings" page we can provide these
-  a. product id
-  b. special page slug
-  c. WooCommerce consumer key. You can get it from WooCommerce->Settings->Advanced->REST API page.
-  d. WooCommerce consumer secret. You can get it from WooCommerce->Settings->Advanced->REST API page.
-  e. Firebase configure options. It requires, because I use firebase as cloud storage.
- 5. At "Videos" page admin will see uploaded video. Admin can download this video also.
- 6. Customer which have bought special product, will be aligable to special page, which were defined by admin.
- 7. At this special page, customer can upload video of mp4 format with 20mb to 200mb size at top "upload" area.
- 8. If customer had uploaded any video previously, he can show and upload this video at middle "my videos" section.
- 9. This customer can see other customers video at last "others videos" section, who also bought this product and uploaded video. This customer can not download other customers video.
- 10. This special page url can not accessed by any guest user. 
+3. After activating this plugin, we get 2 admin pages under ITBZ admin menu. These are - Settings and Videos
+4. At the "Settings" page we can provide followings:
+a. product id
+b. special page slug
+c. WooCommerce consumer key. I created it from WooCommerce->Settings->Advanced->REST API page.
+  d. WooCommerce consumer secret. I created it from WooCommerce->Settings->Advanced->REST API page.
+  e. Firebase configures options. It requires because I use firebase as cloud storage.
+ 5. At the "Videos" page admin will see uploaded video. Admin can download this video also.
+ 6. Customer who has bought the special product will be eligible to a special page, which was defined by admin.
+ 7. On this special page, customers can upload videos of mp4 format with 20mb to 200mb size at the top "upload" area.
+ 8. If the customer had uploaded any video previously, he can show and upload this video in the middle "my videos" section.
+ 9. This customer can see other customers video at last "others videos" section, who also bought this product and uploaded a video. This customer can not download other customer's videos.
+ 10. This special page URL can not be accessed by any guest user. 
 
 ## References
 1. https://github.com/mrinal013/wp-admin-vue
