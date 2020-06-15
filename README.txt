@@ -9,7 +9,7 @@ My account part -----
 2. Get a new page on the customer account, based on the product ordered. It shows like a tab.
 3. On this page, there are 3 parts a. Video upload section b. This customer video section c. Other customer's video section
 
-My steps to solve this problem
+## My steps to solve this problem
 1. First develop admin pages: Settings and Videos. For these pages, I use VueJS, Axios, WooCommerceApi. To store the values of the Settings page, I use axios ajax call. To get products, I use WooCommerceApi.
 2. At the frontend or customer's special page, I use PHP and VueJS.
 3. For uploading the video, I use firebase cloud storage with VusJS.
