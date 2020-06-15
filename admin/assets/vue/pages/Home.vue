@@ -113,12 +113,14 @@ import Multiselect from 'vue-multiselect'
 import axios from "axios";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 
-const WooCommerce = new WooCommerceRestApi({
-  url: object.siteurl, // Your store URL
-  consumerKey: object.wckey, // Your consumer key
-  consumerSecret: object.wcsecret, // Your consumer secret
-  version: 'wc/v3' // WooCommerce WP REST API version
-});
+if( object.wckey && object.wckey ) {
+  const WooCommerce = new WooCommerceRestApi({
+    url: object.siteurl, // Your store URL
+    consumerKey: object.wckey, // Your consumer key
+    consumerSecret: object.wcsecret, // Your consumer secret
+    version: 'wc/v3' // WooCommerce WP REST API version
+  });
+}
 
 export default {
   name: "Home",
@@ -181,15 +183,17 @@ export default {
     }
   },
   mounted () {
-    WooCommerce.get("products?per_page=100")
-    .then((response) => {
-      for(let i = 0; i <= response.data.length; i++) {
-        this.options.push(response.data[i].id)
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    if( object.wckey && object.wckey ) {
+      WooCommerce.get("products?per_page=100")
+      .then((response) => {
+        for(let i = 0; i <= response.data.length; i++) {
+          this.options.push(response.data[i].id)
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
   },
 };
 </script>
