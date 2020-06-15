@@ -24,17 +24,23 @@ window.addEventListener("load", function() {
       imageData: null,
       picture: null,
       uploadValue: 0,
+      uploadInvalid: "",
+      uploadDisable: true,
     },
     methods: {
       onFileSelected(event) {
         let isValid =
-          event.target.files[0].size >= 2097152
+          event.target.files[0].size >= 20971520
             ? event.target.files[0].size <= 209715200
             : false;
         if (isValid) {
           this.uploadValue = 0;
           this.picture = null;
+          this.uploadDisable = false;
+          this.uploadInvalid = "";
           this.imageData = event.target.files[0];
+        } else {
+          this.uploadInvalid = "File size invalid";
         }
       },
       onUpload() {

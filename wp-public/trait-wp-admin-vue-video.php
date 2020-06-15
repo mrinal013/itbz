@@ -36,8 +36,9 @@ trait WP_Admin_Vue_Video {
 			<div class="col-12">
 				<div id="upload">
 					<input type="file" accept="video/mp4" @change="onFileSelected">
-					<p>( Upload mp4 file with 20MB to 200MB )</p>
-					<button class="btn btn-primary" @click="onUpload">Upload</button>
+					<p>( Upload mp4 file within 20MB to 200MB )</p>
+					<p class="text-danger">{{ uploadInvalid }}</p>
+					<button class="btn btn-primary" @click="onUpload" :disabled="!!uploadDisable">Upload</button>
 					<div>
 						<p>Progress: {{uploadValue.toFixed()+"%"}}
 						<progress id="progress" :value="uploadValue" max="100" ></progress>  </p>
@@ -51,7 +52,8 @@ trait WP_Admin_Vue_Video {
 			<div class="row">
 			<?php
 			if( ! empty( $my_videos) ) :
-				foreach( $my_videos as $my_video ) :
+				$my_videos_order = array_reverse( $my_videos );
+				foreach( $my_videos_order as $my_video ) :
 					if( ! empty( $my_video->url ) ) :
 			?>
 				<div class="col-6">
