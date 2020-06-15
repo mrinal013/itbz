@@ -28,8 +28,8 @@ window.addEventListener("load", function() {
     methods: {
       onFileSelected(event) {
         let isValid =
-          event.target.files[0].size > 2097152
-            ? event.target.files[0].size < 209715200
+          event.target.files[0].size >= 2097152
+            ? event.target.files[0].size <= 209715200
             : false;
         if (isValid) {
           this.uploadValue = 0;

@@ -26,6 +26,9 @@ export default {
       videos: object.specialvideos,
     };
   },
+  mounted: function() {
+    console.log(this.videos)
+  }
 };
 </script>
 

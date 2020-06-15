@@ -74,12 +74,10 @@ class Wp_Admin_Vue_Public {
 		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}itbz" );
 		$this->videos = $results;
 		
-
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
 		add_action( 'init', [ $this, 'get_customer_email_id' ] );
-		
 		add_action( 'init', [ $this, 'add_video_forum_endpoint' ] );
 		add_action( 'init', [ $this, 'customer_bought_special_product' ], 99 );
 	}
@@ -90,17 +88,18 @@ class Wp_Admin_Vue_Public {
     	if ( ! wp_verify_nonce( $nonce, 'itbz' ) ) {
 			wp_die ( 'Unauthrized access!');
 		}
-			
-		global $wpdb;
-		$table = $wpdb->prefix.'itbz';
-		$data = array(
-			'product' => $_POST['product'], 
-			'customer' => $_POST['customer'], 
-			'url' => $_POST['url'],
-		);
-		$format = array( '%d', '%s', '%s' );
-		$wpdb->insert( $table, $data, $format );
 
+		if( ! empty( $_POST['url'] ) ) {
+			global $wpdb;
+			$table = $wpdb->prefix.'itbz';
+			$data = array(
+				'product' => $_POST['product'], 
+				'customer' => $_POST['customer'], 
+				'url' => $_POST['url'],
+			);
+			$format = array( '%d', '%s', '%s' );
+			$wpdb->insert( $table, $data, $format );
+		}
 		wp_die();
 	}
 
