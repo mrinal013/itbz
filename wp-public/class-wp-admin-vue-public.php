@@ -47,6 +47,21 @@ class Wp_Admin_Vue_Public {
 	private $version;
 
 	/**
+	 * This user id
+	 */
+	private $customer_id;
+
+	/**
+	 * This user email
+	 */
+	private $customer_email;
+
+	/*
+	* Videos
+	*/
+	private $videos;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -55,14 +70,60 @@ class Wp_Admin_Vue_Public {
 	 */
 	public function __construct( $plugin_name, $version ) {
 
+		global $wpdb;
+		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}itbz" );
+		$this->videos = $results;
+		
+
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		add_action( 'init', [ $this, 'add_video_forum_endpoint'] );
-		add_action( 'woocommerce_account_video-forum_endpoint', [ $this, 'video_forum_content' ] );
+		add_action( 'init', [ $this, 'get_customer_email_id' ] );
+		
+		add_action( 'init', [ $this, 'add_video_forum_endpoint' ] );
+		add_action( 'init', [ $this, 'customer_bought_special_product' ], 99 );
+	}
 
-		add_filter( 'query_vars', [ $this, 'video_forum_query_vars' ], 0 );
-		add_filter( 'woocommerce_account_menu_items', [ $this, 'add_video_forum_link_my_account' ] );
+	public function itbz_upload_function() {
+		$nonce = $_POST['nonce'];
+
+    	if ( ! wp_verify_nonce( $nonce, 'itbz' ) ) {
+			wp_die ( 'Unauthrized access!');
+		}
+			
+		global $wpdb;
+		$table = $wpdb->prefix.'itbz';
+		$data = array(
+			'product' => $_POST['product'], 
+			'customer' => $_POST['customer'], 
+			'url' => $_POST['url'],
+		);
+		$format = array( '%d', '%s', '%s' );
+		$wpdb->insert( $table, $data, $format );
+
+		wp_die();
+	}
+
+	public function get_customer_email_id() {
+		global $product;
+		$current_user = wp_get_current_user();
+		$this->customer_email = $current_user->user_email;
+		$this->customer_id = $current_user->ID;
+	}
+
+	public function customer_bought_special_product() {
+		$special_product = intval( get_option( 'itbz-product' ) );
+		$special_customer = wc_customer_bought_product( $this->customer_email, $this->customer_id, $special_product );
+		if( $special_customer ) {
+			$endpoint_name = 'woocommerce_account_' . str_replace( ' ', '-', get_option( 'itbz-slug' ) ) . '_endpoint';
+			add_action( $endpoint_name, [ $this, 'video_forum_content' ] );
+			add_action( 'wp_ajax_itbz_upload', [ $this, 'itbz_upload_function' ] );
+
+			add_filter( 'query_vars', [ $this, 'video_forum_query_vars' ], 0 );
+			add_filter( 'woocommerce_account_menu_items', [ $this, 'add_video_forum_link_my_account' ] );
+
+			flush_rewrite_rules();
+		}
 	}
 
 	/**
@@ -107,7 +168,22 @@ class Wp_Admin_Vue_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array( ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array( ), $this->version, true );
+
+		wp_localize_script( $this->plugin_name, 'object', [
+			'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
+			'nonce'				=> wp_create_nonce( 'itbz' ),
+			'specialproduct' 	=> get_option( 'itbz-product' ),
+			'customer'		 	=> $this->customer_id,
+			'apiKey' 			=> get_option( 'itbz-apiKey' ),
+			'authDomain' 		=> get_option( 'itbz-authDomain' ),
+			'databaseURL' 		=> get_option( 'itbz-databaseURL' ),
+			'projectId' 		=> get_option( 'itbz-projectId' ),
+			'storageBucket' 	=> get_option( 'itbz-storageBucket' ),
+			'messagingSenderId' => get_option( 'itbz-messagingSenderId' ),
+			'appId' 			=> get_option( 'itbz-appId' ),
+			'measurementId' 	=> get_option( 'itbz-measurementId' ),
+		] );
 
 	}
 

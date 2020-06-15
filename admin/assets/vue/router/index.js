@@ -2,7 +2,6 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "../pages/Home.vue";
 import Videos from "../pages/Videos.vue";
-import WC from "../pages/WC.vue";
 
 Vue.use(Router);
 
@@ -17,11 +16,6 @@ export default new Router({
       path: "/videos",
       name: "Videos",
       component: Videos,
-    },
-    {
-      path: "/wc-setup",
-      name: "WC",
-      component: WC,
     },
   ],
 });

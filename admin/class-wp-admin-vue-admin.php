@@ -48,6 +48,11 @@ class Wp_Admin_Vue_Admin {
 	 */
 	private $version;
 
+	/*
+	* All videos uploaded by customer
+	*/
+	private $videos;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -59,18 +64,41 @@ class Wp_Admin_Vue_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+
+		$this->get_all_videos();
 		
-		add_action( 'wp_ajax_itbz_callback', [ $this, 'itbz_callback_func' ] );
+		add_action( 'wp_ajax_itbz_callback', [ $this, 'itbz_callback_function' ] );
+		add_action( 'wp_ajax_itbz_all_uploads', [ $this, 'itbz_all_uploads_function' ] );
 	}
 
-	public function itbz_callback_func() {
+	public function itbz_callback_function() {
+
+		$nonce = $_POST['nonce'];
+
+    	if ( ! wp_verify_nonce( $nonce, 'itbz' ) ) {
+			wp_die ( 'Unauthrized access!');
+		}
 		
-		update_option( 'itbz-products', $_POST['products'] );
+		update_option( 'itbz-product', $_POST['product'] );
 		update_option( 'itbz-slug', $_POST['slug'] );
 		update_option( 'itbz-wckey', $_POST['wckey'] );
 		update_option( 'itbz-wcsecret', $_POST['wcsecret'] );
+		update_option( 'itbz-apiKey', $_POST['apiKey'] );
+		update_option( 'itbz-authDomain', $_POST['authDomain'] );
+		update_option( 'itbz-databaseURL', $_POST['databaseURL'] );
+		update_option( 'itbz-projectId', $_POST['projectId'] );
+		update_option( 'itbz-storageBucket', $_POST['storageBucket'] );
+		update_option( 'itbz-messagingSenderId', $_POST['messagingSenderId'] );
+		update_option( 'itbz-appId', $_POST['appId'] );
+		update_option( 'itbz-measurementId', $_POST['measurementId'] );
 
 		wp_die();
+	}
+
+	public function get_all_videos() {
+		global $wpdb;
+		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}itbz" );
+		$this->videos = $results;
 	}
 
 	
@@ -120,10 +148,22 @@ class Wp_Admin_Vue_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array(  ), $this->version, false );
 
 		wp_localize_script( $this->plugin_name, 'object', [
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			'siteurl' => get_option('siteurl'),
-			'wckey' => get_option('itbz-wckey'),
-			'wcsecret' => get_option('itbz-wcsecret'),
+			'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
+			'nonce'				=> wp_create_nonce( 'itbz' ),
+			'specialvideos'		=> $this->videos,
+			'siteurl'			=> get_option( 'siteurl' ),
+			'wckey' 			=> get_option( 'itbz-wckey' ),
+			'wcsecret' 			=> get_option( 'itbz-wcsecret' ),
+			'specialproduct' 	=> get_option( 'itbz-product' ),
+			'specialurl' 		=> get_option( 'itbz-slug' ),
+			'apiKey' 			=> get_option( 'itbz-apiKey' ),
+			'authDomain' 		=> get_option( 'itbz-authDomain' ),
+			'databaseURL' 		=> get_option( 'itbz-databaseURL' ),
+			'projectId' 		=> get_option( 'itbz-projectId' ),
+			'storageBucket' 	=> get_option( 'itbz-storageBucket' ),
+			'messagingSenderId' => get_option( 'itbz-messagingSenderId' ),
+			'appId' 			=> get_option( 'itbz-appId' ),
+			'measurementId' 	=> get_option( 'itbz-measurementId' ),
 		] );
 
 	}

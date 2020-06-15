@@ -3,96 +3,85 @@ namespace wp_public;
 
 trait WP_Admin_Vue_Video {
     public function add_video_forum_endpoint() {
-		add_rewrite_endpoint( 'video-forum', EP_ROOT | EP_PAGES );
+		$special_slug = str_replace( ' ', '-', get_option( 'itbz-slug' ) );
+		add_rewrite_endpoint( $special_slug, EP_ROOT | EP_PAGES );
 	}
 
 	public function video_forum_query_vars( $vars ) {
-		$vars[] = 'video-forum';
+		$special_slug = str_replace( ' ', '-', get_option( 'itbz-slug' ) );
+		$vars[] = $special_slug;
 		return $vars;
 	}
 
 	public function add_video_forum_link_my_account( $items ) {
-		$items['video-forum'] = 'Video Forum';
+		$special_slug = str_replace( ' ', '-', get_option( 'itbz-slug' ) );
+		$items[$special_slug] = strtoupper( get_option( 'itbz-slug' ) );
 		return $items;
 	}
 
 	public function video_forum_content() {
+		$my_videos = [];
+		$others = [];
+		if( ! empty( $this->videos ) ) {
+			foreach( $this->videos as $video ) {
+				if( $video->customer == $this->customer_id ) {
+					$my_videos[] = $video;
+				} else {
+					$others[] = $video;
+				}
+			}
+		}
 		?>
 		<div class="row">
 			<div class="col-12">
-				Video Upload section 
-				Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.
-	
-	Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis.
+				<div id="upload">
+					<input type="file" accept="video/mp4" @change="onFileSelected">
+					<p>( Upload mp4 file with 20MB to 200MB )</p>
+					<button class="btn btn-primary" @click="onUpload">Upload</button>
+					<div>
+						<p>Progress: {{uploadValue.toFixed()+"%"}}
+						<progress id="progress" :value="uploadValue" max="100" ></progress>  </p>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="clearfix"></div>
 		<div class="container">
 			<h2>My videos</h2>
 			<div class="row">
+			<?php
+			if( ! empty( $my_videos) ) :
+				foreach( $my_videos as $my_video ) :
+					if( ! empty( $my_video->url ) ) :
+			?>
 				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-							<a href="#" class="btn btn-primary">Download</a>
-						</div>
-					</div>
+					<video width="320" height="240" controls>
+						<source src="<?php echo $my_video->url; ?>" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
 				</div>
-				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-							<a href="#" class="btn btn-primary">Download</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-							<a href="#" class="btn btn-primary">Download</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-							<a href="#" class="btn btn-primary">Download</a>
-						</div>
-					</div>
-				</div>
+			<?php
+					endif;
+				endforeach;
+			endif;
+			?>
 			</div>
-			<h2>Others video</h2>
+			<h2>Others videos</h2>
 			<div class="row">
+				<?php
+				if( ! empty( $others) ) :
+					foreach( $others as $other ) :
+				?>
 				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-						</div>
-					</div>
+					<video width="320" height="240" controls controlsList="nodownload">
+						<source src="<?php echo $other->url; ?>" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
 				</div>
-				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-						</div>
-					</div>
-				</div>
-				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-						</div>
-					</div>
-				</div>
-				<div class="col-6">
-					<div class="card">
-						<img class="card-img-top" src="https://dummyimage.com/600x400/000/fff" alt="Card image cap">
-						<div class="card-body">
-						</div>
-					</div>
-				</div>
+				<?php
+				endforeach;
+			endif;
+			?>
 			</div>
 		</div>
 		<?php
