@@ -10,7 +10,7 @@ My account part -----
 3. On this page, there are 3 parts a. Video upload section b. This customer video section c. Other customer's video section
 
 ## My steps to solve this problem
-1. First develop admin pages: Settings and Videos. For these pages, I use VueJS, Axios, WooCommerceApi. To store the values of the Settings page, I use axios ajax call. To get products, I use WooCommerceApi.
+1. First develop admin pages: Settings and Videos. For these pages, I use VueJS, Axios, WooCommerceApi. To store the values of the Settings page, I use axios AJAX call. To get products, I use WooCommerceApi.
 2. At the frontend or customer's special page, I use PHP and VueJS.
 3. For uploading the video, I use firebase cloud storage with VusJS.
 4. After uploading complete, an AJAX call with axios system called. With this AJAX function, this customer id, special product id and uploaded video's URL stored in a DB table called wp_itbz.
