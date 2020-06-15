@@ -14,11 +14,11 @@ My account part -----
 2. It has WooCommerce dependency. Minimum WC version 4.0 required.
 3. After activating this plugin, we get 2 admin pages under ITBZ admin menu. These are - Settings and Videos
 4. At the "Settings" page we can provide followings:
-a. product id
-b. special page slug
-c. WooCommerce consumer key. I created it from WooCommerce->Settings->Advanced->REST API page.
-  d. WooCommerce consumer secret. I created it from WooCommerce->Settings->Advanced->REST API page.
-  e. Firebase configures options. It requires because I use firebase as cloud storage.
+    a. product id
+    b. special page slug
+    c. WooCommerce consumer key. I created it from WooCommerce->Settings->Advanced->REST API page.
+    d. WooCommerce consumer secret. I created it from WooCommerce->Settings->Advanced->REST API page.
+    e. Firebase configures options. It requires because I use firebase as cloud storage.
  5. At the "Videos" page admin will see uploaded video. Admin can download this video also.
  6. Customer who has bought the special product will be eligible to a special page, which was defined by admin.
  7. On this special page, customers can upload videos of mp4 format with 20mb to 200mb size at the top "upload" area.
