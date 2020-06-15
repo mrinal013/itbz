@@ -9,16 +9,23 @@ My account part -----
 2. Get a new page on the customer account, based on the product ordered. It shows like a tab.
 3. On this page, there are 3 parts a. Video upload section b. This customer video section c. Other customer's video section
 
+My steps to solve this problem
+First develop admin pages: Settings and Videos. For these pages, I use VueJS, Axios, WooCommerceApi. To store the values of the Settings page, I use axios ajax call. To get products, I use WooCommerceApi.
+At the frontend or customer's special page, I use PHP and VueJS.
+For uploading the video, I use firebase cloud storage with VusJS.
+After uploading complete, an AJAX call with axios system called. With this AJAX function, this customer id, special product id and uploaded video's URL stored in a DB table called wp_itbz.
+This table's data are used later for populating video at the admin Video page. Also, these data are used to populate data on the customer's special page. With the "customer id" field, I can find out "my videos" and "other videos".
+
 ## Test instructions:
 1. Install this plugin as normal.
 2. It has WooCommerce dependency. Minimum WC version 4.0 required.
 3. After activating this plugin, we get 2 admin pages under ITBZ admin menu. These are - Settings and Videos
 4. At the "Settings" page we can provide followings:
-    a. product id
-    b. special page slug
-    c. WooCommerce consumer key. I created it from WooCommerce->Settings->Advanced->REST API page.
-    d. WooCommerce consumer secret. I created it from WooCommerce->Settings->Advanced->REST API page.
-    e. Firebase configures options. It requires because I use firebase as cloud storage.
+a. product id
+b. special page slug
+c. WooCommerce consumer key. I created it from WooCommerce->Settings->Advanced->REST API page.
+  d. WooCommerce consumer secret. I created it from WooCommerce->Settings->Advanced->REST API page.
+  e. Firebase configures options. It requires because I use firebase as cloud storage.
  5. At the "Videos" page admin will see uploaded video. Admin can download this video also.
  6. Customer who has bought the special product will be eligible to a special page, which was defined by admin.
  7. On this special page, customers can upload videos of mp4 format with 20mb to 200mb size at the top "upload" area.
