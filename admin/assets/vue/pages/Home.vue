@@ -113,15 +113,6 @@ import Multiselect from 'vue-multiselect'
 import axios from "axios";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 
-if( object.wckey && object.wckey ) {
-  const WooCommerce = new WooCommerceRestApi({
-    url: object.siteurl, // Your store URL
-    consumerKey: object.wckey, // Your consumer key
-    consumerSecret: object.wcsecret, // Your consumer secret
-    version: 'wc/v3' // WooCommerce WP REST API version
-  });
-}
-
 export default {
   name: "Home",
   components: {
@@ -155,7 +146,6 @@ export default {
       this.$delete(this.rows, index)
     },
     specialPageSave: function() {
-      console.log(object.nonce)
       let formData = new FormData;
       formData.append('action', 'itbz_callback');
       formData.append('nonce', object.nonce);
@@ -183,16 +173,24 @@ export default {
     }
   },
   mounted () {
-    if( object.wckey && object.wckey ) {
-      WooCommerce.get("products?per_page=100")
-      .then((response) => {
-        for(let i = 0; i <= response.data.length; i++) {
-          this.options.push(response.data[i].id)
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+    const wcValid = object.wckey.length > 0 && object.wcsecret.length > 0;
+
+    if( wcValid ) {
+      const WooCommerce = new WooCommerceRestApi({
+        url: object.siteurl, // Your store URL
+        consumerKey: object.wckey, // Your consumer key
+        consumerSecret: object.wcsecret, // Your consumer secret
+        version: 'wc/v3' // WooCommerce WP REST API version
       });
+      WooCommerce.get("products?per_page=100")
+        .then((response) => {
+          for(let i = 0; i <= response.data.length; i++) {
+            this.options.push(response.data[i].id)
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   },
 };
