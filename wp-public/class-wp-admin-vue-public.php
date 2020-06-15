@@ -47,6 +47,11 @@ class Wp_Admin_Vue_Public {
 	private $version;
 
 	/**
+	 * Is special page
+	 */
+	private $current_url;
+
+	/**
 	 * This user id
 	 */
 	private $customer_id;
@@ -56,7 +61,7 @@ class Wp_Admin_Vue_Public {
 	 */
 	private $customer_email;
 
-	/*
+	/**
 	* Videos
 	*/
 	private $videos;
@@ -80,6 +85,15 @@ class Wp_Admin_Vue_Public {
 		add_action( 'init', [ $this, 'get_customer_email_id' ] );
 		add_action( 'init', [ $this, 'add_video_forum_endpoint' ] );
 		add_action( 'init', [ $this, 'customer_bought_special_product' ], 99 );
+
+		$this->is_special_page();
+	}
+
+	public function is_special_page() {
+		// $special_page = get_permalink( get_option('woocommerce_myaccount_page_id') ) . str_replace( ' ', '-', get_option( 'itbz-slug' ) ) . '/';
+		$protocol = ( ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443 ) ? "https://" : "http://";  
+		$this->current_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		// $this->is_special_page = ( $special_page === $current_url ) ? true : false;
 	}
 
 	public function itbz_upload_function() {
@@ -133,7 +147,6 @@ class Wp_Admin_Vue_Public {
 	public function enqueue_styles() {
 
 		/**
-		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
 		 * defined in Wp_Admin_Vue_Loader as all of the hooks are defined
@@ -143,8 +156,12 @@ class Wp_Admin_Vue_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+		$special_page = get_permalink( get_option('woocommerce_myaccount_page_id') ) . str_replace( ' ', '-', get_option( 'itbz-slug' ) ) . '/';
+		$is_special_page = ( $special_page === $this->current_url ) ? true : false;
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/css/wp-admin-vue.build.css', array(), $this->version, 'all' );
+		if( $is_special_page ) {
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/css/wp-admin-vue.build.css', array(), $this->version, 'all' );
+		}
 
 	}
 
@@ -156,7 +173,6 @@ class Wp_Admin_Vue_Public {
 	public function enqueue_scripts() {
 
 		/**
-		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
 		 * defined in Wp_Admin_Vue_Loader as all of the hooks are defined
@@ -166,24 +182,26 @@ class Wp_Admin_Vue_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array( ), $this->version, true );
-
-		wp_localize_script( $this->plugin_name, 'object', [
-			'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
-			'nonce'				=> wp_create_nonce( 'itbz' ),
-			'specialproduct' 	=> get_option( 'itbz-product' ),
-			'customer'		 	=> $this->customer_id,
-			'apiKey' 			=> get_option( 'itbz-apiKey' ),
-			'authDomain' 		=> get_option( 'itbz-authDomain' ),
-			'databaseURL' 		=> get_option( 'itbz-databaseURL' ),
-			'projectId' 		=> get_option( 'itbz-projectId' ),
-			'storageBucket' 	=> get_option( 'itbz-storageBucket' ),
-			'messagingSenderId' => get_option( 'itbz-messagingSenderId' ),
-			'appId' 			=> get_option( 'itbz-appId' ),
-			'measurementId' 	=> get_option( 'itbz-measurementId' ),
-		] );
-
+		$special_page = get_permalink( get_option('woocommerce_myaccount_page_id') ) . str_replace( ' ', '-', get_option( 'itbz-slug' ) ) . '/';
+		$is_special_page = ( $special_page === $this->current_url ) ? true : false;
+		
+		if( $is_special_page ) {
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/wp-admin-vue.build.js', array( ), $this->version, true );
+			wp_localize_script( $this->plugin_name, 'object', [
+				'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
+				'nonce'				=> wp_create_nonce( 'itbz' ),
+				'specialproduct' 	=> get_option( 'itbz-product' ),
+				'customer'		 	=> $this->customer_id,
+				'apiKey' 			=> get_option( 'itbz-apiKey' ),
+				'authDomain' 		=> get_option( 'itbz-authDomain' ),
+				'databaseURL' 		=> get_option( 'itbz-databaseURL' ),
+				'projectId' 		=> get_option( 'itbz-projectId' ),
+				'storageBucket' 	=> get_option( 'itbz-storageBucket' ),
+				'messagingSenderId' => get_option( 'itbz-messagingSenderId' ),
+				'appId' 			=> get_option( 'itbz-appId' ),
+				'measurementId' 	=> get_option( 'itbz-measurementId' ),
+			] );
+		}
 	}
 
 }
