@@ -121,14 +121,14 @@ export default {
   data() {
     return {
       options: [],
-      value: object.specialproduct ? object.specialproduct : null,
-      slug: object.specialurl ? object.specialurl : null,
+      value: object.specialproduct ? object.specialproduct : '',
+      slug: object.specialurl ? object.specialurl : '',
       wckey: object.wckey ? object.wckey : '',
       wcsecret: object.wcsecret ? object.wcsecret : '',
       apiKey: object.apiKey ? object.apiKey : '',
       authDomain: object.authDomain ? object.authDomain : '',
       databaseURL: object.databaseURL ? object.databaseURL : '',
-      projectId: object.projectId ? object.projectId : null,
+      projectId: object.projectId ? object.projectId : '',
       storageBucket: object.storageBucket ? object.storageBucket : '',
       messagingSenderId: object.messagingSenderId ? object.messagingSenderId : '',
       appId: object.appId ? object.appId : '',
