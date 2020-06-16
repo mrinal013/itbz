@@ -14,7 +14,7 @@ My account part -----
 2. At the frontend or customer's special page, I use PHP and VueJS.
 3. For uploading the video, I use firebase cloud storage with VusJS.
 4. After uploading complete, an AJAX call with axios system called. With this AJAX function, this customer id, special product id and uploaded video's URL stored in a DB table called wp_itbz.
-5. This table's data are used later for populating video at the admin Video page. Also, these data are used to populate data on the customer's special page. With the "customer id" field, I can find out "my videos" and "other videos".
+5. This table's data are used later for populating video at the admin Video page. Also, these data are used to populate video on the customer's special page. With the "customer id" field, I can find out "my videos" and "other videos".
 
 ## Test instructions:
 1. Install this plugin as normal.
